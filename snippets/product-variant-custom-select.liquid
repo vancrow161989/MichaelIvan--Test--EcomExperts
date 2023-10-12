@@ -1,0 +1,148 @@
+{% comment %}
+  Renders product variant options
+
+  Accepts:
+  - product: {Object} product object.
+  - option: {Object} current product_option object.
+  - block: {Object} block object.
+
+
+  Usage:
+  {% render 'product-variant-options',
+    product: product,
+    option: option,
+    block: block
+  %}
+{% endcomment %}
+{%- liquid
+  assign variants_available_arr = product.variants | map: 'available'
+  assign variants_option1_arr = product.variants | map: 'option1'
+  assign variants_option2_arr = product.variants | map: 'option2'
+  assign variants_option3_arr = product.variants | map: 'option3'
+
+  assign product_form_id = 'product-form-' | append: section.id
+-%}
+{%- for value in option.values -%}
+  {%- liquid
+    assign option_disabled = true
+
+    for option1_name in variants_option1_arr
+      case option.position
+        when 1
+          if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+            assign option_disabled = false
+          endif
+        when 2
+          if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+            assign option_disabled = false
+          endif
+        when 3
+          if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+            assign option_disabled = false
+          endif
+      endcase
+    endfor
+  -%}
+  <div style="display: none;">
+    <input
+      type="radio"
+      id="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+      class="radio-size"
+      name="{{ option.name }}"
+      value="{{ value | escape }}"
+      form="{{ product_form_id }}"
+      {% comment %}
+        {% if option.selected_value == value %}
+          checked
+        {% endif %}
+      {% endcomment %}
+      {% if option_disabled %}
+        class="disabled"
+      {% endif %}
+    >
+
+    <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
+      {{ value -}}
+      <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
+    </label>
+  </div>
+{%- endfor -%}
+<div class="select">
+  <select id="custom-size-select" class="select__select" {{ block.shopify_attributes }}>
+    {%- for value in option.values -%}
+      {%- liquid
+        assign option_disabled = true
+
+        for option1_name in variants_option1_arr
+          case option.position
+            when 1
+              if variants_option1_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                assign option_disabled = false
+              endif
+            when 2
+              if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                assign option_disabled = false
+              endif
+            when 3
+              if option1_name == product.selected_or_first_available_variant.option1 and variants_option2_arr[forloop.index0] == product.selected_or_first_available_variant.option2 and variants_option3_arr[forloop.index0] == value and variants_available_arr[forloop.index0]
+                assign option_disabled = false
+              endif
+          endcase
+        endfor
+      -%}
+      <option
+        value="{{ value | escape }}"
+        {% comment %}
+          {% if option.selected_value == value %}
+            selected="selected"
+          {% endif %}
+        {% endcomment %}
+      >
+        {% if option_disabled -%}
+          {{- 'products.product.value_unavailable' | t: option_value: value -}}
+        {%- else -%}
+          {{- value -}}
+        {%- endif %}
+      </option>
+    {%- endfor -%}
+  </select>
+  <svg aria-hidden="true" focusable="false" class="icon icon-caret" viewBox="0 0 10 6">
+      <path fill-rule="evenodd" clip-rule="evenodd" d="M9.354.646a.5.5 0 00-.708 0L5 4.293 1.354.646a.5.5 0 00-.708.708l4 4a.5.5 0 00.708 0l4-4a.5.5 0 000-.708z" fill="currentColor">
+    </path>
+  </svg>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const sizeEl = document.getElementById('custom-size-select');
+    const radioEl = document.querySelectorAll('.radio-size');
+    const firstRadioEl = radioEl[0];
+    const event = new Event('change', {
+      bubbles: true, // Allows the event to bubble up through the DOM
+      cancelable: true, // Allows the event to be canceled (if needed)
+    });
+
+    firstRadioEl.dispatchEvent(event);
+    addUnselectOption();
+
+    sizeEl.addEventListener('change', updateRadioValue);
+
+    function updateRadioValue() {
+      const sizeValue = sizeEl.value;
+      radioEl.forEach(function (radioInput) {
+        if (radioInput.value === sizeValue) {
+          radioInput.checked = true;
+        } else {
+          radioInput.checked = false;
+        }
+      });
+    }
+
+    function addUnselectOption() {
+      const newOption = document.createElement('option');
+      newOption.textContent = 'Unselected';
+      newOption.selected = true;
+      sizeEl.insertBefore(newOption, sizeEl.firstChild);
+    }
+  });
+</script>

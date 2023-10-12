@@ -51,6 +51,23 @@
         novalidate: 'novalidate',
         data-type: 'add-to-cart-form'
       -%}
+        <!-- starts temporary codes for showing the bundle products -->
+        {% comment %} <script type="application/json"> {% endcomment %}
+        {% comment %} {{ product | json }} {% endcomment %}
+        {% comment %} {{ product.metafields | json }} {% endcomment %}
+        {% comment %} {{ product.metafields.custom.product_bundle }} {% endcomment %}
+        {% comment %} </script> {% endcomment %}
+        {% comment %} {{ product.metafields.custom.product_bundle }} {% endcomment %}
+        <!-- ends temporary codes for showing the bundle products -->
+        {% assign gid = product.metafields.custom.product_bundle %}
+        {% assign bundle = gid | split: 'Product/' %}
+        {% assign bundleId = bundle | last %}
+        <input
+          type="hidden"
+          name="product-bundle"
+          value="{{ bundleId }}"
+        >
+        <!-- ends temporary codes for showing the bundle products -->
         <input
           type="hidden"
           name="id"
