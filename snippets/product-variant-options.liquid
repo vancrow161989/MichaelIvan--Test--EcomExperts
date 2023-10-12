@@ -59,10 +59,26 @@
         class="disabled"
       {% endif %}
     >
-    <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
-      {{ value -}}
-      <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
-    </label>
+    <!-- Start Custom code to make the color variant into color image swatches -->
+    {% if option.name == 'Color' -%}
+      <label
+        class="product-color-label"
+        for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
+        style="
+          background-image:
+          url({{ value | append: '.png' | file_url }})
+        "
+      >
+        <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
+      </label>
+
+    {%- else -%}
+      <label for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}">
+        {{ value -}}
+        <span class="visually-hidden">{{ 'products.product.variant_sold_out_or_unavailable' | t }}</span>
+      </label>
+    {%- endif %}
+    <!-- End Custom code to make the color variant into color image swatches -->
   {%- elsif block.settings.picker_type == 'dropdown' -%}
     <option
       value="{{ value | escape }}"
