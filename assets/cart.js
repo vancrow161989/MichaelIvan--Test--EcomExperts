@@ -8,7 +8,6 @@ class CartRemoveButton extends HTMLElement {
         this.closest("cart-items") || this.closest("cart-drawer-items");
       cartItems.updateQuantity(this.dataset.index, 0);
       /* Start auto remove the bundle if it has bundle items */
-      // console.log("Size:", this.dataset.size, "Color:", this.dataset.color);
       if (
         this.dataset.bundle &&
         this.dataset.size === "Medium" &&
