@@ -859,8 +859,8 @@
                 "label": "Pills"
               }
             },
-            "color_image_swatch": {
-              "label": "Enable Image Swatch",
+            "enable_color_image_swatch": {
+              "label": "Enable Color Image Swatch",
               "options__1": {
                 "label": "Yes"
               },
@@ -1988,6 +1988,15 @@
               },
               "options__2": {
                 "label": "Pills"
+              }
+            },
+            "enable_color_image_swatch": {
+              "label": "Enable Color Image Swatch",
+              "options__1": {
+                "label": "Yes"
+              },
+              "options__2": {
+                "label": "No"
               }
             }
           }

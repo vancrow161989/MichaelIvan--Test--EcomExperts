@@ -60,7 +60,7 @@
       {% endif %}
     >
     <!-- Start Custom code to make the color variant into color image swatches -->
-    {% if option.name == 'Color' -%}
+    {% if option.name == 'Color' and block.settings.enable_color_image_swatch == 'Yes' -%}
       <label
         class="product-color-label"
         for="{{ section.id }}-{{ option.position }}-{{ forloop.index0 }}"
